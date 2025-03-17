@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../Services/getotp_api_calling.dart';
-
+import '../services/getotp_api_calling.dart';
+import 'verify_otp_screen.dart';
 
 class FirstScreen extends StatefulWidget {
   @override
@@ -13,33 +13,24 @@ class _FirstScreenState extends State<FirstScreen> {
 
   Future<void> _handleGetOtp() async {
     String mobile = _mobileController.text.trim();
-
-    if (mobile.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter your mobile number")),
-      );
+    if (mobile.isEmpty || mobile.length < 10) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter valid mobile number")));
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     bool success = await GetOtpApi.sendOtp(mobile);
 
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("OTP sent successfully")),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => VerifyOtpScreen(mobile: mobile)),
       );
-      // Navigate to OTP verification screen here if needed
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to send OTP")),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to send OTP")));
     }
   }
 
@@ -63,10 +54,7 @@ class _FirstScreenState extends State<FirstScreen> {
               children: [
                 const Icon(Icons.star, size: 60, color: Colors.orange),
                 const SizedBox(height: 20),
-                const Text(
-                  "Earn 500 Bonus Points",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+                const Text("Earn 500 Bonus Points", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 const Text(
                   "Get £0.50 in your balance just by getting in today",
@@ -108,7 +96,7 @@ class _FirstScreenState extends State<FirstScreen> {
                           ),
                           onPressed: _isLoading ? null : _handleGetOtp,
                           child: _isLoading
-                              ? CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(color: Colors.white)
                               : const Text("Get OTP", style: TextStyle(color: Colors.white, fontSize: 18)),
                         ),
                       ),
@@ -118,9 +106,7 @@ class _FirstScreenState extends State<FirstScreen> {
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                       TextButton(
-                        onPressed: () {
-                          // Navigate to Terms and Privacy Policy
-                        },
+                        onPressed: () {},
                         child: const Text(
                           "Terms of Service and Privacy Policy",
                           style: TextStyle(fontSize: 12, color: Colors.teal, fontWeight: FontWeight.bold),
