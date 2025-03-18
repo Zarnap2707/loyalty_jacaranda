@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import '../Services/session_manager.dart';
 import '../services/verifyotp_api_calling.dart';
-import '../services/session_manager.dart';
+
+import 'update_profile_screen.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
   final String mobile;
@@ -23,17 +25,24 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
     setState(() => _isVerifying = true);
 
-    bool success = await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text);
+    // This now returns Map<String, dynamic> or null
+    final Map<String, dynamic>? response = (await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text)) as Map<String, dynamic>?;
 
     setState(() => _isVerifying = false);
 
-    if (success) {
-      await SessionManager.saveMobile(widget.mobile);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("OTP Verified!")));
-      // Navigate next
+    if (response != null && response['token'] != null) {
+      String token = response['token'];
+
+      await SessionManager.saveMobileAndToken(widget.mobile, token);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UpdateProfileScreen(token: token),
+        ),
+      );
     } else {
       _otpController.clear();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Invalid OTP")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Invalid OTP or token not found")));
     }
   }
 

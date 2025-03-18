@@ -3,27 +3,30 @@ import 'package:http/http.dart' as http;
 import '../shared/constants.dart';
 
 class VerifyOtpApi {
-  static Future<bool> verifyOtp(String mobile, String otp) async {
+  static Future<Map<String, dynamic>?> verifyOtp(String mobile, String otp) async {
     final Map<String, dynamic> body = {
       'mobile': mobile,
       'otp': int.parse(otp),
     };
 
-    final response = await http.post(
-      Uri.parse('${AppConfig.baseUrl}/verifyOTP'),
-      headers: {
-        'Content-Type': 'application/json',
-        'x-group-token': AppConfig.groupToken,
-      },
-      body: jsonEncode(body),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('${AppConfig.baseUrl}/verifyOTP'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-group-token': AppConfig.groupToken,
+        },
+        body: jsonEncode(body),
+      );
 
-    if (response.statusCode == 200) {
-      print('OTP Verified Successfully: ${response.body}');
-      return true;
-    } else {
-      print('OTP Verification Failed: ${response.body}');
-      return false;
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Network Error: $e');
+      return null;
     }
   }
 }
