@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../Services/session_manager.dart';
-import '../services/verifyotp_api_calling.dart';
-
+import '../Services/verifyotp_api_calling.dart';
+import '../Services/resendotp_api_calling.dart';
 import 'update_profile_screen.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
@@ -16,6 +16,7 @@ class VerifyOtpScreen extends StatefulWidget {
 class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   TextEditingController _otpController = TextEditingController();
   bool _isVerifying = false;
+  bool _isResending = false;
 
   Future<void> _handleVerify() async {
     if (_otpController.text.length != 6) {
@@ -25,14 +26,12 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
     setState(() => _isVerifying = true);
 
-    // This now returns Map<String, dynamic> or null
-    final Map<String, dynamic>? response = (await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text)) as Map<String, dynamic>?;
+    final Map<String, dynamic>? response = await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text);
 
     setState(() => _isVerifying = false);
 
     if (response != null && response['token'] != null) {
       String token = response['token'];
-
       await SessionManager.saveMobileAndToken(widget.mobile, token);
       Navigator.pushReplacement(
         context,
@@ -42,7 +41,19 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       );
     } else {
       _otpController.clear();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Invalid OTP or token not found")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Invalid OTP")));
+    }
+  }
+
+  Future<void> _handleResendOtp() async {
+    setState(() => _isResending = true);
+    bool success = await ResendOtpApi.resendOtp(widget.mobile);
+    setState(() => _isResending = false);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("OTP resent successfully")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to resend OTP")));
     }
   }
 
@@ -58,7 +69,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             children: [
               const Text("Verify OTP", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text("Enter the verification code sent to your mobile number", style: TextStyle(color: Colors.grey)),
+              Text("Code sent to ${widget.mobile}", style: TextStyle(color: Colors.grey)),
               const SizedBox(height: 30),
               PinCodeTextField(
                 appContext: context,
@@ -79,6 +90,19 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                 ),
                 onCompleted: (value) => _handleVerify(),
                 onChanged: (value) {},
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: GestureDetector(
+                  onTap: _isResending ? null : _handleResendOtp,
+                  child: Text(
+                    _isResending ? "Resending OTP..." : "Didn't receive OTP? Resend OTP",
+                    style: TextStyle(
+                      color: _isResending ? Colors.grey : Colors.teal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
               const Spacer(),
               SizedBox(
