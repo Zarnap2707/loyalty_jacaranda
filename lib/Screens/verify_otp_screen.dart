@@ -3,7 +3,10 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../Services/session_manager.dart';
 import '../Services/verifyotp_api_calling.dart';
 import '../Services/resendotp_api_calling.dart';
+import '../Services/profile_api_calling.dart';
+import 'Welcome_screen.dart';
 import 'update_profile_screen.dart';
+
 
 class VerifyOtpScreen extends StatefulWidget {
   final String mobile;
@@ -28,18 +31,44 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
     final Map<String, dynamic>? response = await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text);
 
-    setState(() => _isVerifying = false);
-
     if (response != null && response['token'] != null) {
       String token = response['token'];
+      bool isRegistered = response['is_registered'] ?? false;
       await SessionManager.saveMobileAndToken(widget.mobile, token);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UpdateProfileScreen(token: token),
-        ),
-      );
+
+      if (isRegistered) {
+        // ✅ Now call /profile API
+        final profile = await ProfileApi.getProfile(token);
+
+        setState(() => _isVerifying = false);
+
+        if (profile != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WelcomeScreen(
+                id: profile['id'],
+                name: profile['name'],
+                mobile: profile['mobile'],
+                email: profile['email'] ?? '',
+                points: profile['points'] ?? 0,
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to fetch profile")));
+        }
+      } else {
+        setState(() => _isVerifying = false);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UpdateProfileScreen(token: token),
+          ),
+        );
+      }
     } else {
+      setState(() => _isVerifying = false);
       _otpController.clear();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Invalid OTP")));
     }
