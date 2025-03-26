@@ -28,126 +28,121 @@ class WelcomeScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.teal.shade400, Colors.teal.shade50],
-          ),
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        elevation: 0,
+        title: Row(
+          children: [
+            const Icon(Icons.person, color: Colors.white),
+            const SizedBox(width: 8),
+            Text(name, style: const TextStyle(color: Colors.white)),
+          ],
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              // Avatar + name + mobile
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, color: Colors.teal, size: 40),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Hello, $name!",
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              Text(
-                mobile,
-                style: const TextStyle(fontSize: 14, color: Colors.white70),
-              ),
-              const SizedBox(height: 25),
-
-              // QR Code Card
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              _showAccountOptions(context);
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Points Card
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.star, color: Colors.orange, size: 30),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Your Points", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text("$points pts = ₹${(points * 0.1).toStringAsFixed(2)}", style: const TextStyle(fontSize: 14, color: Colors.grey)),
                   ],
+                )
+              ],
+            ),
+          ),
+
+          // Offers Scroll Section
+          SizedBox(
+            height: 140,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, index) => Container(
+                width: 180,
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [Colors.teal.shade300, Colors.teal.shade100]),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
                 ),
                 child: Column(
-                  children: [
-                    const Text(
-                      "Your QR Code",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
-                    ),
-                    const SizedBox(height: 10),
-                    QrImageView(
-                      data: qrData,
-                      version: QrVersions.auto,
-                      size: 160,
-                      backgroundColor: Colors.white,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Scan this code at checkout to earn points!",
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                    ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text("Exclusive Offer", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Spacer(),
+                    Text("Earn double points this weekend!", style: TextStyle(color: Colors.white70, fontSize: 12))
                   ],
                 ),
               ),
-              const SizedBox(height: 25),
-
-              // Points Card
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.orange.shade300, Colors.orange.shade600],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(color: Colors.orange.shade200, blurRadius: 10, offset: Offset(0, 4)),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Your Loyalty Points",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "$points pts",
-                      style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-
-              const Spacer(),
-
-              // Logout Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.logout, color: Colors.white),
-                      SizedBox(width: 10),
-                      Text("Logout", style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
-        ),
+
+          const SizedBox(height: 20),
+
+          // QR Code
+          QrImageView(
+            data: qrData,
+            version: QrVersions.auto,
+            size: 180,
+            backgroundColor: Colors.white,
+          ),
+          const Spacer(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'My Card'),
+          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Shop List'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Maps'),
+        ],
+      ),
+    );
+  }
+
+  void _showAccountOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Column(
+
+
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(leading: const Icon(Icons.person), title: const Text("Personal Information")),
+          ListTile(leading: const Icon(Icons.history), title: const Text("Points History")),
+          ListTile(leading: const Icon(Icons.privacy_tip), title: const Text("Privacy & Sharing")),
+          ListTile(leading: const Icon(Icons.help), title: const Text("Get Help")),
+          ListTile(leading: const Icon(Icons.logout), title: const Text("Sign Out")),
+        ],
       ),
     );
   }
