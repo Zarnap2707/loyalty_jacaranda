@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../Services/profile_api_calling.dart';
 import '../Services/update_profile_api.dart';
-
 import '../services/session_manager.dart';
+import 'Welcome_screen.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   final String token;
@@ -29,12 +30,28 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     final success = await UpdateProfileApi.updateProfile(name, email, widget.token);
 
-    setState(() => _isUpdating = false);
-
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Profile Updated Successfully")));
-      // Navigate to next screen if needed
+      final profile = await ProfileApi.getProfile(widget.token);
+      setState(() => _isUpdating = false);
+
+      if (profile != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WelcomeScreen(
+              id: profile['id'],
+              name: profile['name'],
+              mobile: profile['mobile'],
+              email: profile['email'] ?? '',
+              points: profile['points'] ?? 0,
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to fetch profile")));
+      }
     } else {
+      setState(() => _isUpdating = false);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to update profile")));
     }
   }
