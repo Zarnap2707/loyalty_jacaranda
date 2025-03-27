@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'dart:convert';
+import '../services/session_manager.dart';
+import 'shop_list_screen.dart'; // Make sure this is created and imported
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   final int id;
   final String name;
   final String mobile;
@@ -19,12 +21,60 @@ class WelcomeScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  int _selectedIndex = 0;
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ShopListScreen()),
+      );
+    }
+
+    // You can handle other tabs later (QR Code, Maps, etc.)
+  }
+
+  void _showAccountOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(leading: const Icon(Icons.person), title: const Text("Personal Information")),
+          ListTile(leading: const Icon(Icons.history), title: const Text("Points History")),
+          ListTile(leading: const Icon(Icons.privacy_tip), title: const Text("Privacy & Sharing")),
+          ListTile(leading: const Icon(Icons.help), title: const Text("Get Help")),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text("Sign Out"),
+            onTap: () async {
+              await SessionManager.clearSession();
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final qrData = jsonEncode({
-      "id": id,
-      "name": name,
-      "email": email,
-      "mobile": mobile,
+      "id": widget.id,
+      "name": widget.name,
+      "email": widget.email,
+      "mobile": widget.mobile,
     });
 
     return Scaffold(
@@ -36,7 +86,7 @@ class WelcomeScreen extends StatelessWidget {
           children: [
             const Icon(Icons.person, color: Colors.white),
             const SizedBox(width: 8),
-            Text(name, style: const TextStyle(color: Colors.white)),
+            Text(widget.name, style: const TextStyle(color: Colors.white)),
           ],
         ),
         actions: [
@@ -67,7 +117,8 @@ class WelcomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Your Points", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text("$points pts = ₹${(points * 0.1).toStringAsFixed(2)}", style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                    Text("${widget.points} pts = ₹${(widget.points * 0.1).toStringAsFixed(2)}",
+                        style: const TextStyle(fontSize: 14, color: Colors.grey)),
                   ],
                 )
               ],
@@ -114,6 +165,8 @@ class WelcomeScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onTabTapped,
         selectedItemColor: Colors.teal,
         unselectedItemColor: Colors.grey,
         items: const [
@@ -121,27 +174,6 @@ class WelcomeScreen extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'My Card'),
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Shop List'),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Maps'),
-        ],
-      ),
-    );
-  }
-
-  void _showAccountOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => Column(
-
-
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(leading: const Icon(Icons.person), title: const Text("Personal Information")),
-          ListTile(leading: const Icon(Icons.history), title: const Text("Points History")),
-          ListTile(leading: const Icon(Icons.privacy_tip), title: const Text("Privacy & Sharing")),
-          ListTile(leading: const Icon(Icons.help), title: const Text("Get Help")),
-          ListTile(leading: const Icon(Icons.logout), title: const Text("Sign Out")),
         ],
       ),
     );

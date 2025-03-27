@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../shared/constants.dart';
 
-class ProfileApi {
-  static Future<Map<String, dynamic>?> getProfile(String token) async {
+class ShopListApi {
+  static Future<List<Map<String, dynamic>>> fetchShops(String token) async {
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/auth/profile'),
+        Uri.parse('${AppConfig.baseUrl}/shops/list'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -15,14 +15,15 @@ class ProfileApi {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
+        final data = jsonDecode(response.body);
+        return List<Map<String, dynamic>>.from(data['shops']);
       } else {
-        print('Profile Error: ${response.body}');
-        return null;
+        print('Shop List Error: ${response.body}');
+        return [];
       }
     } catch (e) {
       print('Network Error: $e');
-      return null;
+      return [];
     }
   }
 }

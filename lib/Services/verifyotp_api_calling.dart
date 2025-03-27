@@ -11,7 +11,7 @@ class VerifyOtpApi {
 
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/verifyOTP'),
+        Uri.parse('${AppConfig.baseUrl}/auth/verifyOTP'),
         headers: {
           'Content-Type': 'application/json',
           'x-group-token': AppConfig.groupToken,

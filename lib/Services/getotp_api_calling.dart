@@ -7,7 +7,7 @@ class GetOtpApi {
     final Map<String, dynamic> body = {'mobile': mobile};
 
     final response = await http.post(
-      Uri.parse('${AppConfig.baseUrl}/sendotp'),
+      Uri.parse('${AppConfig.baseUrl}/auth/sendotp'),
       headers: {
         'Content-Type': 'application/json',
         'x-group-token': AppConfig.groupToken,

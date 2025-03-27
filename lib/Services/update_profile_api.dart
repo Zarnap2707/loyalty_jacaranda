@@ -9,7 +9,7 @@ class UpdateProfileApi {
 
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/updateprofile'),
+        Uri.parse('${AppConfig.baseUrl}/auth/updateprofile'),
         headers: {
           'Content-Type': 'application/json',
           'x-group-token': AppConfig.groupToken,
