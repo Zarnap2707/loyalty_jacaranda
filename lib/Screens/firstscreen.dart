@@ -14,7 +14,9 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> _handleGetOtp() async {
     String mobile = _mobileController.text.trim();
     if (mobile.isEmpty || mobile.length < 10) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter valid mobile number")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Enter valid mobile number")),
+      );
       return;
     }
 
@@ -27,10 +29,14 @@ class _FirstScreenState extends State<FirstScreen> {
     if (success) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => VerifyOtpScreen(mobile: mobile)),
+        MaterialPageRoute(
+          builder: (context) => VerifyOtpScreen(mobile: mobile),
+        ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to send OTP")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to send OTP")),
+      );
     }
   }
 
@@ -38,28 +44,30 @@ class _FirstScreenState extends State<FirstScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.teal.shade300, Colors.white],
+            end: Alignment.center,
+            colors: [Colors.teal.shade300, Colors.teal.shade100],
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
+        child: Center(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(Icons.star, size: 60, color: Colors.orange),
                 const SizedBox(height: 20),
-                const Text("Earn 500 Bonus Points", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const Text(
+                  "Earn 500 Bonus Points",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 10),
                 const Text(
                   "Get £0.50 in your balance just by getting in today",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
                 const SizedBox(height: 30),
                 Container(
@@ -67,11 +75,14 @@ class _FirstScreenState extends State<FirstScreen> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.teal),
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withOpacity(0.95),
                   ),
                   child: Column(
                     children: [
-                      const Text("Get Started", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      const Text(
+                        "Get Started",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: _mobileController,
@@ -92,12 +103,17 @@ class _FirstScreenState extends State<FirstScreen> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             backgroundColor: Colors.orange,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                           onPressed: _isLoading ? null : _handleGetOtp,
                           child: _isLoading
                               ? const CircularProgressIndicator(color: Colors.white)
-                              : const Text("Get OTP", style: TextStyle(color: Colors.white, fontSize: 18)),
+                              : const Text(
+                            "Get OTP",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 10),

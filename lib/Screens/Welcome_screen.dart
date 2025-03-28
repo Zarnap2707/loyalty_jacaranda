@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../services/session_manager.dart';
+import 'map_screen.dart';
 import 'shop_list_screen.dart'; // Make sure this is created and imported
 
 class WelcomeScreen extends StatefulWidget {
@@ -38,6 +39,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         MaterialPageRoute(builder: (context) => ShopListScreen()),
       );
     }
+    else if (index == 3) {
+   //   Navigator.push(context, MaterialPageRoute(builder: (context) => MapScreen()));
+    }
+
 
     // You can handle other tabs later (QR Code, Maps, etc.)
   }

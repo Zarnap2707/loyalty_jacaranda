@@ -58,43 +58,65 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Update Profile")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: "Name",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+    return WillPopScope(
+      onWillPop: () async => false, // ✅ Disable back button
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Update Profile"),
+          backgroundColor: Colors.teal,
+          automaticallyImplyLeading: false, // ✅ Hide back arrow
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.teal.shade300, Colors.teal.shade100],
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange, // ✅ Orange button
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: _isUpdating ? null : _handleUpdateProfile,
+                      child: _isUpdating
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text("Update Profile", style: TextStyle(fontSize: 18, color: Colors.white)),
+                    ),
+                  )
+                ],
               ),
             ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: _isUpdating ? null : _handleUpdateProfile,
-                child: _isUpdating
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Update Profile", style: TextStyle(fontSize: 18)),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

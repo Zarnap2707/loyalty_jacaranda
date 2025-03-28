@@ -26,6 +26,7 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.example.testing"
     compileSdk = flutter.compileSdkVersion
+
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -42,6 +43,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+
     }
 
     buildTypes {
@@ -56,3 +58,4 @@ android {
 flutter {
     source = "../.."
 }
+
