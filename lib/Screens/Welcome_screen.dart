@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../services/session_manager.dart';
+
+import '../Services/session_manager.dart';
+import 'firstscreen.dart';
 import 'map_screen.dart';
 import 'shop_list_screen.dart'; // Make sure this is created and imported
 
@@ -65,7 +67,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             title: const Text("Sign Out"),
             onTap: () async {
               await SessionManager.clearSession();
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              await SessionManager.clearLastScreen();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => FirstScreen()),
+                    (route) => false,
+              );
             },
           ),
         ],

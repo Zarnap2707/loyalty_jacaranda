@@ -29,7 +29,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     }
 
     setState(() => _isVerifying = true);
-
+    await SessionManager.setLastScreen("WelcomeScreen");
     final Map<String, dynamic>? response =
     await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text);
 

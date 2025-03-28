@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../Services/profile_api_calling.dart';
+import '../Services/session_manager.dart';
 import '../Services/update_profile_api.dart';
-import '../services/session_manager.dart';
+
 import 'Welcome_screen.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -29,10 +30,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     setState(() => _isUpdating = true);
 
     final success = await UpdateProfileApi.updateProfile(name, email, widget.token);
-
+    await SessionManager.setLastScreen("WelcomeScreen");
     if (success) {
       final profile = await ProfileApi.getProfile(widget.token);
       setState(() => _isUpdating = false);
+
 
       if (profile != null) {
         Navigator.pushReplacement(
