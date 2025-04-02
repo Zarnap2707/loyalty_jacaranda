@@ -16,14 +16,14 @@ class VerifyOtpScreen extends StatefulWidget {
 }
 
 class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
-  TextEditingController _otpController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
   bool _isVerifying = false;
   bool _isResending = false;
 
   Future<void> _handleVerify() async {
     if (_otpController.text.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Enter complete OTP")),
+        const SnackBar(content: Text("Enter complete OTP")),
       );
       return;
     }
@@ -56,7 +56,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to fetch profile")));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Failed to fetch profile")),
+          );
         }
       } else {
         setState(() => _isVerifying = false);
@@ -70,7 +72,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     } else {
       setState(() => _isVerifying = false);
       _otpController.clear();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Invalid OTP")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid OTP")),
+      );
     }
   }
 
@@ -79,15 +83,22 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     bool success = await ResendOtpApi.resendOtp(widget.mobile);
     setState(() => _isResending = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(success ? "OTP resent successfully" : "Failed to resend OTP"),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(success ? "OTP resent successfully" : "Failed to resend OTP"),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -98,14 +109,31 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 50),
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.07,
+                vertical: screenHeight * 0.05,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Verify OTP", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
-                  const SizedBox(height: 10),
-                  Text("Code sent to ${widget.mobile}", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white70)),
-                  const SizedBox(height: 30),
+                  Text(
+                    "Verify OTP",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.065,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal.shade900,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Text(
+                    "Code sent to ${widget.mobile}",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.04,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
                   PinCodeTextField(
                     appContext: context,
                     length: 6,
@@ -114,9 +142,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     keyboardType: TextInputType.number,
                     pinTheme: PinTheme(
                       shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(8),
-                      fieldHeight: 50,
-                      fieldWidth: 45,
+                      borderRadius: BorderRadius.circular(10),
+                      fieldHeight: screenHeight * 0.07,
+                      fieldWidth: screenWidth * 0.13,
                       activeFillColor: Colors.white,
                       inactiveFillColor: Colors.white,
                       selectedFillColor: Colors.white,
@@ -126,7 +154,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     onCompleted: (value) => _handleVerify(),
                     onChanged: (value) {},
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.02),
                   Center(
                     child: GestureDetector(
                       onTap: _isResending ? null : _handleResendOtp,
@@ -134,24 +162,33 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         _isResending ? "Resending OTP..." : "Didn't receive OTP? Resend OTP",
                         style: TextStyle(
                           color: _isResending ? Colors.grey : Colors.white,
+                          fontSize: screenWidth * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: screenHeight * 0.06),
                   SizedBox(
                     width: double.infinity,
-                    height: 55,
+                    height: screenHeight * 0.065,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
                       onPressed: _isVerifying ? null : _handleVerify,
                       child: _isVerifying
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("Verify & Login", style: TextStyle(color: Colors.white, fontSize: 16)),
+                          : Text(
+                        "Verify & Login",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.045,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],

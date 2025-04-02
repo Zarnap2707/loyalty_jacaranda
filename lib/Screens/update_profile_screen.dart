@@ -31,7 +31,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     setState(() => _isUpdating = true);
 
     final success = await UpdateProfileApi.updateProfile(name, email, widget.token);
-    await SessionManager.setLastScreen("WelcomeScreen");
+    await SessionManager.setLastScreen("UpdateProfileScreen");
 
     if (success) {
       final profile = await ProfileApi.getProfile(widget.token);
@@ -72,11 +72,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Update Profile", style: TextStyle(fontSize: screenWidth * 0.05)),
-          backgroundColor: Colors.teal,
-          automaticallyImplyLeading: false,
-        ),
+     //   appBar: AppBar(
+       //   title: Text("Update Profile", style: TextStyle(fontSize: screenWidth * 0.05)),
+       //   backgroundColor: Colors.teal,
+       //   automaticallyImplyLeading: false,
+      //  ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -103,7 +103,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.055,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.teal.shade900,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.04),
