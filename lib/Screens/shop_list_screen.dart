@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/shop_list_api.dart';
@@ -34,7 +36,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
     final String encodedAddress = Uri.encodeComponent(address);
 
     // Try to launch Google Maps app directly
-    final String url = 'google.maps://?q=$encodedAddress';
+  /*  final String url = 'google.maps://?q=$encodedAddress';
 
     // Check if the device has the Google Maps app installed
     if (await canLaunch(url)) {
@@ -47,6 +49,37 @@ class _ShopListScreenState extends State<ShopListScreen> {
       } else {
         throw 'Could not open Google Maps';
       }
+    } */
+    final Uri googleMapsUri = Uri.parse('google.maps://?q=$encodedAddress');
+    final Uri mapSearchUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+    final Uri appleMapsUri = Uri.parse('http://maps.apple.com/?daddr=$encodedAddress');
+    final Uri fallbackWebUri = Uri.parse('https://www.google.com/maps/search/?q=$encodedAddress');
+
+    try {
+      if (Platform.isIOS) {
+        // Try Google Maps app first
+        if (await canLaunchUrl(googleMapsUri)) {
+          await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+        }
+        // Fallback to Apple Maps
+        else if (await canLaunchUrl(appleMapsUri)) {
+          await launchUrl(appleMapsUri, mode: LaunchMode.externalApplication);
+        }
+        // Fallback to web
+        else {
+          await launchUrl(fallbackWebUri, mode: LaunchMode.externalApplication);
+        }
+      } else {
+        // Android logic (already working)
+        final Uri androidIntent = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+        if (await canLaunchUrl(androidIntent)) {
+          await launchUrl(androidIntent, mode: LaunchMode.externalApplication);
+        } else {
+          await launchUrl(fallbackWebUri, mode: LaunchMode.externalApplication);
+        }
+      }
+    } catch (e) {
+      print('Map error: $e');
     }
   }
 
@@ -69,6 +102,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
               onTap: () {
                 // Open Google Maps app when a shop is tapped
                 _openMap(shop['shopaddress'] ?? '');
+                print("list item tapped");
               },
             ),
           );
