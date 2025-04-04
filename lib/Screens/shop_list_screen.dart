@@ -51,7 +51,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
       }
     } */
     final Uri googleMapsUri = Uri.parse('google.maps://?q=$encodedAddress');
-    final Uri mapSearchUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+   // final Uri mapSearchUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
     final Uri appleMapsUri = Uri.parse('http://maps.apple.com/?daddr=$encodedAddress');
     final Uri fallbackWebUri = Uri.parse('https://www.google.com/maps/search/?q=$encodedAddress');
 
