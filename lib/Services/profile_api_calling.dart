@@ -13,6 +13,7 @@ class ProfileApi {
           'x-group-token': AppConfig.groupToken,
         },
       );
+      print('token is : $token');
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;

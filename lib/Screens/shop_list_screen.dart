@@ -86,7 +86,8 @@ class _ShopListScreenState extends State<ShopListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Shop List"), backgroundColor: Colors.teal),
+
+      appBar: AppBar(title: const Text("Shop List", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)), backgroundColor: Colors.teal),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(

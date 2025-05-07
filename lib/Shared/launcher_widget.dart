@@ -4,7 +4,7 @@ import '../Screens/firstscreen.dart';
 import '../Screens/update_profile_screen.dart';
 import '../Services/session_manager.dart';
 import '../Services/profile_api_calling.dart';
-
+import '../Services/notification_service.dart';
 
 class LauncherWidget extends StatefulWidget {
   const LauncherWidget({Key? key}) : super(key: key);
@@ -20,6 +20,7 @@ class _LauncherWidgetState extends State<LauncherWidget> {
   @override
   void initState() {
     super.initState();
+    NotificationService.initialize();
     _decideStartScreen();
   }
 
@@ -29,19 +30,22 @@ class _LauncherWidgetState extends State<LauncherWidget> {
 
     if (token != null) {
       final profile = await ProfileApi.getProfile(token);
-      if (profile != null) {
-        if (lastScreen == "WelcomeScreen") {
-          _startScreen = WelcomeScreen(
-            id: profile['id'],
-            name: profile['name'],
-            mobile: profile['mobile'],
-            email: profile['email'] ?? '',
-            points: profile['points'] ?? 0,
-          );
-        } else if (lastScreen == "UpdateProfileScreen") {
-          _startScreen = UpdateProfileScreen(token: token);
-        }
+
+      // If profile has name and email -> WelcomeScreen, else -> UpdateProfile
+      if (profile != null && profile['name'] != null && profile['email'] != null && profile['name'].toString().isNotEmpty && profile['email'].toString().isNotEmpty) {
+        await SessionManager.setLastScreen("WelcomeScreen");
+        _startScreen = WelcomeScreen(
+          id: profile['id'],
+          name: profile['name'],
+          mobile: profile['mobile'],
+          email: profile['email'],
+          points: profile['points'] ?? 0,
+        );
+      } else {
+        _startScreen = UpdateProfileScreen(token: token);
       }
+    } else {
+      _startScreen = FirstScreen();
     }
 
     setState(() => _loading = false);

@@ -22,11 +22,11 @@ class _FirstScreenState extends State<FirstScreen> {
 
     setState(() => _isLoading = true);
 
-    bool success = await GetOtpApi.sendOtp(mobile);
+    dynamic success = await GetOtpApi.snp(mobile);
 
     setState(() => _isLoading = false);
 
-    if (success) {
+    if (success['result']) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -35,7 +35,7 @@ class _FirstScreenState extends State<FirstScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to send OTP")),
+        SnackBar(content: Text('${success['msg']}')), // ✅ Fixed line
       );
     }
   }

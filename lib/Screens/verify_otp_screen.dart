@@ -29,7 +29,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     }
 
     setState(() => _isVerifying = true);
-    await SessionManager.setLastScreen("WelcomeScreen");
+   // await SessionManager.setLastScreen("WelcomeScreen");
     final Map<String, dynamic>? response =
     await VerifyOtpApi.verifyOtp(widget.mobile, _otpController.text);
 
@@ -133,6 +133,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       color: Colors.white70,
                     ),
                   ),
+
                   SizedBox(height: screenHeight * 0.04),
                   PinCodeTextField(
                     appContext: context,
