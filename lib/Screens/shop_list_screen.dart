@@ -87,7 +87,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: AppBar(title: const Text("Shop List", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)), backgroundColor: Colors.teal),
+      appBar: AppBar(title: const Text("Shop List", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)), backgroundColor: Colors.cyan, iconTheme: const IconThemeData(color: Colors.white)),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -97,7 +97,7 @@ class _ShopListScreenState extends State<ShopListScreen> {
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
-              leading: const Icon(Icons.store, color: Colors.teal),
+              leading: const Icon(Icons.store, color: Colors.cyan),
               title: Text(shop['shopname'] ?? 'No Name'),
               subtitle: Text(shop['shopaddress'] ?? 'No Address'),
               onTap: () {

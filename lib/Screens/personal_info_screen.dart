@@ -33,6 +33,13 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     _emailController.text = widget.email;
   }
 
+  @override
+  void dispose() { // >>> CHANGED: lifecycle hygiene
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  } // <<<
+
   Future<void> _updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -44,11 +51,14 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     final token = await SessionManager.getToken();
     final success = await UpdateProfileApi.updateProfile(name, email, token ?? '');
 
+    if (!mounted) return; // >>> CHANGED: safe after await
+
     if (success) {
       final updatedProfile = await ProfileApi.getProfile(token ?? '');
+      if (!mounted) return; // >>> CHANGED
+      setState(() => _isUpdating = false);
 
       if (updatedProfile != null) {
-        setState(() => _isUpdating = false);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -62,7 +72,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
           ),
         );
       } else {
-        setState(() => _isUpdating = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to fetch updated profile')),
         );
@@ -77,76 +86,131 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final mq = MediaQuery.of(context);                       // >>> CHANGED
+    final w = mq.size.width;                                  // >>> CHANGED
+    final h = mq.size.height;                                 // >>> CHANGED
+    final isTablet = w >= 600;                                // >>> CHANGED
+
+    // >>> CHANGED: font scaling helper (matches your other screens)
+    double _fs(double base) {
+      final scaled = base * (w / 390.0);
+      return scaled.clamp(base * 0.9, base * (isTablet ? 1.4 : 1.15));
+    }
+    // <<<
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Personal Information",  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)),
-        backgroundColor: Colors.teal,
+        title: Text(
+          "Personal Information",
+          style: TextStyle(color: Colors.white, fontSize: _fs(18), fontWeight: FontWeight.w600), // >>> CHANGED
+        ),
+        backgroundColor: Colors.cyan,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SafeArea( // >>> CHANGED
         child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: "Name",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    prefixIcon: const Icon(Icons.person),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Name is required";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    prefixIcon: const Icon(Icons.email),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Email is required";
-                    }
-                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                    if (!emailRegex.hasMatch(value)) {
-                      return "Enter a valid email address";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: EdgeInsets.symmetric( // >>> CHANGED: responsive paddings
+            horizontal: (w * 0.07).clamp(16, 28),
+            vertical: (h * 0.04).clamp(16, 36),
+          ),
+          child: Center( // >>> CHANGED: keeps tidy on tablets
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    // NAME
+                    TextFormField(
+                      controller: _nameController,
+                      textInputAction: TextInputAction.next,              // >>> CHANGED
+                      textCapitalization: TextCapitalization.words,       // >>> CHANGED
+                      autofillHints: const [AutofillHints.name],          // >>> CHANGED
+                      style: TextStyle(fontSize: _fs(16)),                // >>> CHANGED
+                      decoration: InputDecoration(
+                        labelText: "Name",
+                        labelStyle: TextStyle(fontSize: _fs(14)),         // >>> CHANGED
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        filled: true, fillColor: Colors.white,
+                        prefixIcon: const Icon(Icons.person),
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: (h * 0.018).clamp(12, 20),            // >>> CHANGED
+                          horizontal: (w * 0.04).clamp(12, 20),           // >>> CHANGED
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Name is required";
+                        }
+                        return null;
+                      },
                     ),
-                    onPressed: _isUpdating ? null : _updateProfile,
-                    child: _isUpdating
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text("Update Profile", style: TextStyle(fontSize: 18)),
-                  ),
+
+                    SizedBox(height: (h * 0.025).clamp(12, 24)),          // >>> CHANGED
+
+                    // EMAIL
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,              // >>> CHANGED
+                      autofillHints: const [AutofillHints.email],         // >>> CHANGED
+                      style: TextStyle(fontSize: _fs(16)),                // >>> CHANGED
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        labelStyle: TextStyle(fontSize: _fs(14)),         // >>> CHANGED
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        filled: true, fillColor: Colors.white,
+                        prefixIcon: const Icon(Icons.email),
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: (h * 0.018).clamp(12, 20),            // >>> CHANGED
+                          horizontal: (w * 0.04).clamp(12, 20),           // >>> CHANGED
+                        ),
+                      ),
+                      onFieldSubmitted: (_) => _updateProfile(),          // >>> CHANGED
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Email is required";
+                        }
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (!emailRegex.hasMatch(value)) {
+                          return "Enter a valid email address";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: (h * 0.035).clamp(14, 28)),          // >>> CHANGED
+
+                    // BUTTON
+                    SizedBox(
+                      width: double.infinity,
+                      height: (h * 0.065).clamp(48, 56),                  // >>> CHANGED
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange.shade700,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: _isUpdating ? null : _updateProfile,
+                        child: _isUpdating
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                          "Update Profile",
+                          style: TextStyle(fontSize: _fs(16), color: Colors.white), // >>> CHANGED
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: (h * 0.03).clamp(12, 24)),           // >>> CHANGED
+
+                    // MOBILE
+                    Text(
+                      "Mobile No: ${widget.mobile}",
+                      textAlign: TextAlign.center,                         // >>> CHANGED
+                      style: TextStyle(fontSize: _fs(14), color: Colors.black87), // >>> CHANGED
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  "Mobile No: ${widget.mobile}",
-                  style: TextStyle(fontSize: screenWidth * 0.045, color: Colors.black87),
-                ),
-              ],
+              ),
             ),
           ),
         ),

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-// For QR Code generation
-// Import the QRCodeScannerScreen
+import 'package:qr_flutter/qr_flutter.dart'; // For QR Code generation
 
 class MyCardScreen extends StatelessWidget {
   final String userName;
-  final String userQRCodeData; // You can pass the QR code data here.
+  final String userQRCodeData;
 
   const MyCardScreen({
     Key? key,
@@ -16,71 +13,86 @@ class MyCardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final mq = MediaQuery.of(context);
+    final screenWidth = mq.size.width;
+    final screenHeight = mq.size.height;
+    final isTablet = screenWidth >= 600;
+
+    // >>> CHANGED: font scaling helper
+    double _fs(double base) {
+      final scaled = base * (screenWidth / 390.0);
+      return scaled.clamp(base * 0.9, base * (isTablet ? 1.4 : 1.15));
+    }
+    // <<<
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white), // 👈 White back arrow
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         title: Text(
           "My QR Code",
           style: TextStyle(
-            fontSize: screenWidth * 0.055,
-            fontWeight: FontWeight.bold,
-            color: Colors.white, // AppBar text color same as in WelcomeScreen
+            color: Colors.white,
+            fontSize: _fs(18), // >>> CHANGED
+            fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.teal, // Teal color for AppBar
-        elevation: 0,
+        backgroundColor: Colors.cyan,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        color: Colors.white, // Full background color
-        width: double.infinity,
-        height: screenHeight, // Full screen height
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06, vertical: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Header text
-              Text(
-                "Your QR Code",
-                style: TextStyle(
-                  fontSize: screenWidth * 0.06,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal.shade900, // Dark teal text for contrast
-                ),
-                textAlign: TextAlign.center,
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: screenHeight,
+            padding: EdgeInsets.symmetric(
+              horizontal: (screenWidth * 0.07).clamp(16, 32), // >>> CHANGED: responsive padding
+              vertical: (screenHeight * 0.04).clamp(16, 40), // >>> CHANGED
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Your QR Code",
+                    style: TextStyle(
+                      fontSize: _fs(22), // >>> CHANGED
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade900,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: (screenHeight * 0.03).clamp(12, 28)), // >>> CHANGED
+                  Text(
+                    "Scan this QR code to earn the points",
+                    style: TextStyle(
+                      fontSize: _fs(14), // >>> CHANGED
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade700,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: (screenHeight * 0.04).clamp(16, 36)), // >>> CHANGED
+                  QrImageView(
+                    data: userQRCodeData,
+                    version: QrVersions.auto,
+                    size: (screenWidth * 0.55).clamp(160, 280), // >>> CHANGED: responsive QR size
+                    backgroundColor: Colors.white,
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                "Scan this QR code to earn the points",
-
-                style: TextStyle(
-                  fontSize: screenWidth * 0.03,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade700, // Dark teal text for contrast
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              // QR Code display
-              QrImageView(
-                data: userQRCodeData, // Data passed to generate QR Code
-                version: QrVersions.auto,
-                size: screenWidth * 0.5, // Adjust size based on screen width
-                backgroundColor: Colors.white,
-              ),
-
-
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            bottom: mq.viewPadding.bottom + 20, // >>> CHANGED: safe area aware
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () => Navigator.pop(context),
+              backgroundColor: Colors.cyan,
+              child: const Icon(Icons.arrow_back, color: Colors.white),
+              mini: true,
+            ),
+          ),
+        ],
       ),
     );
   }

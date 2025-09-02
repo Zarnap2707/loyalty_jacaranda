@@ -11,7 +11,7 @@ class VerifyOtpApi {
 
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/auth/verifyOTP'),
+        Uri.parse('${AppConfig.baseUrl}/verifyOTP'),
         headers: {
           'Content-Type': 'application/json',
           'x-group-token': AppConfig.groupToken,
@@ -20,6 +20,8 @@ class VerifyOtpApi {
       );
 
       if (response.statusCode == 200) {
+     //   print( 'uuu ${jsonDecode(response.body).uuid}');
+
         return jsonDecode(response.body) as Map<String, dynamic>;
       } else {
         return null;

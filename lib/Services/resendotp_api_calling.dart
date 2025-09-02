@@ -8,7 +8,7 @@ class ResendOtpApi {
 
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/auth/resendOTP'),
+        Uri.parse('${AppConfig.baseUrl}/resendOTP'),
         headers: {
           'Content-Type': 'application/json',
           'x-group-token': AppConfig.groupToken,

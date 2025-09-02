@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../shared/constants.dart';
-import 'session_manager.dart';
+
 
 class UpdateProfileApi {
   static Future<bool> updateProfile(String name, String email, String token) async {
@@ -9,7 +9,7 @@ class UpdateProfileApi {
 
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/auth/updateprofile'),
+        Uri.parse('${AppConfig.baseUrl}/updateprofile'),
         headers: {
           'Content-Type': 'application/json',
           'x-group-token': AppConfig.groupToken,

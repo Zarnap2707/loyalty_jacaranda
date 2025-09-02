@@ -6,7 +6,7 @@ class ShopListApi {
   static Future<List<Map<String, dynamic>>> fetchShops(String token) async {
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.baseUrl}/shops/list'),
+        Uri.parse('${AppConfig.baseUrl}/shops'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

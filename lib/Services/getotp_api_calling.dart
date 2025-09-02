@@ -7,7 +7,7 @@ class GetOtpApi {
     final Map<String, dynamic> body = {'mobile': mobile};
 
     final response = await http.post(
-      Uri.parse('${AppConfig.baseUrl}/auth/sendotp'),
+      Uri.parse('${AppConfig.baseUrl}/sendotp'),
       headers: {
         'Content-Type': 'application/json',
         'x-group-token': AppConfig.groupToken,
@@ -16,7 +16,7 @@ class GetOtpApi {
     );
 
     if (response.statusCode == 200) {
-      print( '${jsonDecode(response.body).message}');
+
       return true;
     } else {
       print('Error: ${response.body}');
@@ -27,7 +27,7 @@ class GetOtpApi {
     final Map<String, dynamic> body = {'mobile': mobile};
 
     final response = await http.post(
-      Uri.parse('${AppConfig.baseUrl}/auth/sendotp'),
+      Uri.parse('${AppConfig.baseUrl}/sendotp'),
       headers: {
         'Content-Type': 'application/json',
         'x-group-token': AppConfig.groupToken,
