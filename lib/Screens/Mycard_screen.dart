@@ -35,7 +35,7 @@ class MyCardScreen extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.cyan,
+        backgroundColor: Colors.grey.shade800,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(
@@ -87,7 +87,7 @@ class MyCardScreen extends StatelessWidget {
             right: 20,
             child: FloatingActionButton(
               onPressed: () => Navigator.pop(context),
-              backgroundColor: Colors.cyan,
+              backgroundColor: Colors.grey.shade800,
               child: const Icon(Icons.arrow_back, color: Colors.white),
               mini: true,
             ),

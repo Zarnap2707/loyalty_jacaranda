@@ -10,7 +10,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     TextStyle headingStyle = TextStyle(
       fontSize: screenWidth * 0.05,
       fontWeight: FontWeight.bold,
-      color: Colors.cyan.shade900,
+      color: Colors.grey.shade900,
     );
 
     TextStyle bodyStyle = TextStyle(
@@ -20,7 +20,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Privacy Policy", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)), backgroundColor: Colors.cyan, iconTheme: const IconThemeData(color: Colors.white)),
+      appBar: AppBar(title: const Text("Privacy Policy", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)), backgroundColor: Colors.grey.shade800, iconTheme: const IconThemeData(color: Colors.white)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -108,7 +108,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text("9. Contact Us", style: headingStyle),
                 const SizedBox(height: 8),
                 Text(
-                  "Email: support@gloposnet.com",
+                  "Email to Jacaranda ",
                   style: bodyStyle,
                 ),
               ],

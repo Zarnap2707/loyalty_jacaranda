@@ -44,19 +44,35 @@ dependencies:
   firebase_messaging: ^14.7.4
   firebase_analytics: ^10.7.0
   flutter_local_notifications: ^17.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: 3.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/app_icon.png  # your logo file
+  adaptive_icon_background: "#ffffff"       # optional for Android
+  adaptive_icon_foreground: assets/images/app_icon.png
 
+flutter_native_splash:
+  color: "#ffffff"                        # background color
+  image: assets/images/splash_icon.png     # your splash logo
+  android: true
+  ios: true
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
 
-  flutter_lints: 3.0.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

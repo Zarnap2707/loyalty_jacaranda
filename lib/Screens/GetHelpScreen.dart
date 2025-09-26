@@ -38,7 +38,7 @@ class GetHelpScreen extends StatelessWidget {
           "Get Help",
           style: TextStyle(color: Colors.white, fontSize: _fs(18), fontWeight: FontWeight.w600),
         ),
-        backgroundColor: Colors.cyan,
+        backgroundColor: Colors.grey.shade800,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
@@ -56,7 +56,7 @@ class GetHelpScreen extends StatelessWidget {
                   Icon(
                     Icons.email_outlined,
                     size: (w * 0.22).clamp(80, isTablet ? 140 : 120),
-                    color: Colors.cyan,
+                    color: Colors.grey.shade800,
                   ),
                   SizedBox(height: (h * 0.025).clamp(12, 24)),
                   Text(

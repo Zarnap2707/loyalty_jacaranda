@@ -31,7 +31,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final profile = await ProfileApi.getProfile(widget.token);
     if (!mounted || profile == null) return;
     // only prefill if empty (to not overwrite user typing on hot reload)
-    if ((_nameController.text).isEmpty) _nameController.text = (profile['name'] ?? '').toString();
+  //  if ((_nameController.text).isEmpty) _nameController.text = (profile['name'] ?? '').toString();
     if ((_emailController.text).isEmpty) _emailController.text = (profile['email'] ?? '').toString();
     setState(() {}); // reflect any initial values
   }
@@ -125,7 +125,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.cyan, Colors.cyan.shade200],
+                colors: [Colors.grey, Colors.grey.shade200],
               ),
             ),
             child: SafeArea(

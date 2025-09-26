@@ -81,7 +81,7 @@ class _FirstScreenState extends State<FirstScreen> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.center,
-              colors: [Colors.cyan, Colors.cyan.shade200],
+              colors: [Colors.grey.shade200, Colors.grey.shade200],
             ),
           ),
           child: SafeArea(
@@ -104,10 +104,11 @@ class _FirstScreenState extends State<FirstScreen> {
                       // >>> CHANGED: FittedBox to avoid overflow on tiny screens
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Icon(
-                          Icons.star,
-                          size: (screenWidth * 0.15).clamp(56, 92),
-                          color: Colors.orange.shade700,
+                        child: Image.asset(
+                          'assets/images/Picture1.png', // 👈 replace with your actual path
+                          width: (screenWidth * 0.25).clamp(100, 160), // adjust as needed
+                          height: (screenWidth * 0.25).clamp(100, 160),
+                          fit: BoxFit.contain,
                         ),
                       ),
                       // <<<
@@ -118,7 +119,7 @@ class _FirstScreenState extends State<FirstScreen> {
                         style: TextStyle(
                           fontSize: _fs(24),
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade800,
+                          color: Colors.black,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -129,14 +130,14 @@ class _FirstScreenState extends State<FirstScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: _fs(16),
-                          color: Colors.white,
+                          color: Colors.grey.shade800,
                         ),
                       ),
                       SizedBox(height: (screenHeight * 0.04).clamp(16, 36)),
                       Container(
                         padding: EdgeInsets.all((screenWidth * 0.06).clamp(16, 28)),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.cyan),
+                          border: Border.all(color: Colors.grey.shade800),
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.white.withOpacity(0.95),
                         ),
@@ -148,7 +149,7 @@ class _FirstScreenState extends State<FirstScreen> {
                               // >>> CHANGED: FittedBox title
                               FittedBox(
                                 fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
+                                alignment: Alignment.center,
                                 child: Text(
                                   "Get Started",
                                   style: TextStyle(
@@ -270,7 +271,7 @@ class _FirstScreenState extends State<FirstScreen> {
                                   textAlign: TextAlign.center, // >>> CHANGED
                                   style: TextStyle(
                                     fontSize: _fs(13),
-                                    color: Colors.cyan,
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

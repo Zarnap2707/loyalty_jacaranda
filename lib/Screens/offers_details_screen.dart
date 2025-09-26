@@ -23,7 +23,7 @@ class OffersDetailsScreen extends StatelessWidget {
     final heroTag = 'offer-${offer['offer_id']}';
 
     return Scaffold(
-      appBar: AppBar(title: Text(name, overflow: TextOverflow.ellipsis), backgroundColor: Colors.cyan),
+      appBar: AppBar(title: Text(name, overflow: TextOverflow.ellipsis), backgroundColor: Colors.grey),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

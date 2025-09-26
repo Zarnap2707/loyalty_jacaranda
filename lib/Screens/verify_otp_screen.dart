@@ -140,7 +140,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.center,
-              colors: [Colors.cyan, Colors.cyan.shade200],
+              colors: [Colors.grey, Colors.grey.shade200],
             ),
           ),
           child: SafeArea(
@@ -201,8 +201,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             inactiveFillColor: Colors.white,
                             selectedFillColor: Colors.white,
                             inactiveColor: Colors.white,
-                            activeColor: Colors.cyan,
-                            selectedColor: Colors.cyan.shade700,
+                            activeColor: Colors.grey,
+                            selectedColor: Colors.grey.shade800,
                           ),
                           onCompleted: (_) => _handleVerify(),
                           onChanged: (_) {},

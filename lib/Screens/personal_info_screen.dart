@@ -104,7 +104,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
           "Personal Information",
           style: TextStyle(color: Colors.white, fontSize: _fs(18), fontWeight: FontWeight.w600), // >>> CHANGED
         ),
-        backgroundColor: Colors.cyan,
+        backgroundColor: Colors.grey.shade800,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea( // >>> CHANGED
