@@ -2,33 +2,22 @@
 .dart_tool/
 .pub/
 build/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-Generated.xcconfig
-flutter_export_environment.sh
-
-# iOS
-ios/Pods/
-ios/Podfile.lock
-ios/Runner.xcworkspace/
-ios/Flutter/Flutter.framework
-ios/Flutter/App.framework
 
 # Android
 android/.gradle/
 android/build/
 
-# VS Code / IntelliJ
+# iOS
+ios/Pods/
+ios/Podfile.lock
+ios/Runner.xcworkspace/
+ios/Flutter/
+
+# IDE
 .vscode/
 .idea/
 
-# Logs
+# Logs & keys
 *.log
-
-# Keys and sensitive files
 *.keystore
 *.jks
-*.p12
-*.mobileprovision
-*.cer
